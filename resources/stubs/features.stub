@@ -1,0 +1,21 @@
+<?php
+
+namespace {{namespace}};
+
+use App\Abstracts\BaseFeature;
+use App\Enums\Features;
+use App\Models\Features\Feature;
+
+class {{class}} extends BaseFeature {
+
+    public const KEY = '{{feature}}';
+
+    function validator(Feature $feature){
+
+    }
+
+    function recordUsage(Feature $feature){
+
+    }   
+
+}

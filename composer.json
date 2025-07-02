@@ -1,0 +1,28 @@
+{
+    "name": "saaspro/features",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Utibe-Abasi Emmanuel",
+            "email": "utyemma@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "SaasPro\\Features": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "suggest": {
+        "filament/filament": "Required to access the admin panel"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "SaasPro\\Features\\FeatureServiceProvider"
+            ]
+        }
+    }
+}
