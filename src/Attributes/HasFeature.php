@@ -8,7 +8,7 @@ use Attribute;
 class HasFeature {
 
     function __construct(private string|array $feature) {
-
+        
     }
 
     function can() {

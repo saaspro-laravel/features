@@ -45,7 +45,7 @@ class Features {
     }
 
     public function use(){
-        return $this->feature()->instance->recordUsage($this->usage());
+        $this->feature()->instance->use($this->usage());
     } 
 
 }

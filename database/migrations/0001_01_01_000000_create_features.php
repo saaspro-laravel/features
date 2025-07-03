@@ -22,10 +22,10 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        Schema::create('plan_features', function (Blueprint $table) {
+        Schema::create('feature_items', function (Blueprint $table) {
             $table->id();
-            $table->string('plan_id');
             $table->string('feature_id');
+            $table->uuidMorphs('featureable');
             $table->string('reset_period')->nullable();
             $table->string('reset_interval')->nullable();
             $table->string('limit')->nullable();
