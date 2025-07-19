@@ -12,4 +12,11 @@ trait HasFeature {
         return Features::from($feature)->validate();
     }
 
+    function features(){
+        return $this->belongsToMany(Feature::class, 'plan_features')
+            ->withPivot(['id', 'limit', 'reset_period', 'reset_interval'])
+            ->as('feature')
+            ->withTimestamps();
+    }
+
 }

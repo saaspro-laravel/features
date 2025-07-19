@@ -17,6 +17,7 @@ class Feature extends Model {
         'status' => Status::class
     ];
 
+
     function usageHistory(){
         return $this->hasMany(FeatureUsage::class);
     }

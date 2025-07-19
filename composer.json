@@ -9,11 +9,14 @@
     ],
     "autoload": {
         "psr-4": {
-            "SaasPro\\Features": "src/"
+            "SaasPro\\Features\\": "src/"
         },
         "files": [
             "src/helpers.php"
         ]
+    },
+    "require": {
+        "saaspro/saaspro": "self.version"
     },
     "suggest": {
         "filament/filament": "Required to access the admin panel"
