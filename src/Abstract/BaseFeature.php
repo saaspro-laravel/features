@@ -1,6 +1,6 @@
 <?php
 
-namespace Utyemma\SaasPro\Features\Abstracts;
+namespace SaasPro\Features\Abstracts;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;

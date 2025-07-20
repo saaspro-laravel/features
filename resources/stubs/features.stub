@@ -2,20 +2,21 @@
 
 namespace {{namespace}};
 
-use App\Abstracts\BaseFeature;
-use App\Enums\Features;
-use App\Models\Features\Feature;
+use SaasPro\Features\Abstracts\BaseFeature;
+use SaasPro\Features\Models\Feature;
+use SaasPro\Features\Support\FeatureState;
+use SaasPro\Features\Support\Usage;
 
 class {{class}} extends BaseFeature {
 
     public const KEY = '{{feature}}';
 
-    function validator(Feature $feature){
-
+    function validator(Feature $feature): FeatureState {
+        return FeatureState::dispatch();
     }
 
-    function recordUsage(Feature $feature){
+    function record(Usage $usage): void{
 
-    }   
+    }    
 
 }

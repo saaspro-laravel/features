@@ -5,7 +5,7 @@ namespace SaasPro\Features\Commands;
 use SaasPro\Features\Models\Feature;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
-use SaasPro\Facades\Features;
+use SaasPro\Features\Facades\Features;
 
 class CreateFeature extends GeneratorCommand implements PromptsForMissingInput
 {

@@ -10,10 +10,7 @@
     "autoload": {
         "psr-4": {
             "SaasPro\\Features\\": "src/"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
+        }
     },
     "require": {
         "saaspro/saaspro": "self.version"
@@ -25,6 +22,11 @@
         "laravel": {
             "providers": [
                 "SaasPro\\Features\\FeatureServiceProvider"
+            ]
+        },
+        "saaspro": {
+            "providers": [
+                "SaasPro\\Features\\PluginProvider"
             ]
         }
     }

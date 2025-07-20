@@ -1,18 +1,17 @@
 <?php
 
-namespace Utyemma\SaasPro\Filament\Resources\Features;
+namespace SaasPro\Features\Filament\Resources;
 
-use Utyemma\SaasPro\Enums\Timelines;
-use Utyemma\SaasPro\Filament\Resources\Features\FeatureResource\Pages;
-use Utyemma\SaasPro\Filament\Resources\Features\FeatureResource\RelationManagers;
-use Utyemma\SaasPro\Filament\Forms\Components\SelectStatus;
-use Utyemma\SaasPro\Models\Features\Feature;
+use SaasPro\Enums\Timelines;
+use SaasPro\Features\Filament\Resources\FeatureResource\Pages;
+use SaasPro\Features\Models\Feature;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Select;
+use SaasPro\Filament\Forms\Components\SelectStatus;
 
 
 class FeatureResource extends Resource
@@ -59,8 +58,8 @@ class FeatureResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('shortcode')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('description')
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('description')
+                //     ->searchable(),
                 Tables\Columns\TextColumn::make('reset_period')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('reset_interval')

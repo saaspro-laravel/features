@@ -1,8 +1,9 @@
 <?php
 
-namespace Utyemma\SaasPro\Filament\Resources\Features\FeatureResource\Pages;
+namespace SaasPro\Features\Filament\Resources\FeatureResource\Pages;
 
-use Utyemma\SaasPro\Filament\Resources\Features\FeatureResource;
+use Filament\Forms\Set;
+use SaasPro\Features\Filament\Resources\FeatureResource;
 use Filament\Actions;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -18,20 +19,25 @@ class ListFeatures extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('New Feature')
+            Actions\Action::make('Run Command')
                 ->modalWidth('md')
                 ->form([
                     TextInput::make('name')
-                        ->hint('@eg AddTeamMembers')
+                        ->prefix('php artisan make:feature')
                         ->unique('features', 'feature_class')
-                        ->live()
+                        ->placeholder('YourFeatureClass')
+                        ->label('Command')
+                        ->afterStateUpdated(function(Set $set, string $state){
+                            $set('--feature', str($state)->snake());
+                            $set('--title', str($state)->headline());
+                        })
+                        ->live(onBlur: true)
                         ->required(),
                     TextInput::make('--title')
                         ->label("Title"),
                     TextInput::make('--feature')  
-                        ->label("Feature")
-                        ->unique('features', 'shortcode')
-                        ->hint('@eg add_team_members'),
+                        ->label("Slug")
+                        ->unique('features', 'shortcode'),
                     Textarea::make('--description')
                         ->label("Description")
                 ])

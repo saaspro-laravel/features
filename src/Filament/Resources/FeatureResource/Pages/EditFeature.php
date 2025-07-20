@@ -1,8 +1,8 @@
 <?php
 
-namespace Utyemma\SaasPro\Filament\Resources\Features\FeatureResource\Pages;
+namespace SaasPro\Features\Filament\Resources\FeatureResource\Pages;
 
-use Utyemma\SaasPro\Filament\Resources\Features\FeatureResource;
+use SaasPro\Features\Filament\Resources\FeatureResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 

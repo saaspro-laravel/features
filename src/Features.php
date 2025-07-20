@@ -10,13 +10,7 @@ class Features {
     private ?Feature $feature;
 
     public function __construct(Feature|string|null $feature = null) {
-        if(is_string($feature)) {
-            $this->fromKey($feature);
-        }
-
-        if($feature !== null) {
-            $this->feature = $feature;
-        }
+        is_string($feature) ? $this->fromKey($feature) : $this->feature = $feature;
     }
 
     public static function from(Feature|string $feature) {
