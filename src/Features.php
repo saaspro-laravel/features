@@ -39,7 +39,7 @@ class Features {
             }
         }
 
-        return $feature->instance;
+        return null;
     }
 
     function validate(Feature|string $feature, ?InteractsWithFeatures $user = null): FeatureState {

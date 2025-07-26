@@ -35,8 +35,8 @@ return new class extends Migration {
         Schema::create('feature_usages', function (Blueprint $table) {
             $table->id();
             $table->string('feature_id');
-            $table->uuidMorphs('user');
-            $table->uuidMorphs('owner');
+            $table->nullableUuidMorphs('user');
+            $table->nullableUuidMorphs('owner');
             $table->json('meta')->nullable();
             $table->string('value')->nullable();
             $table->integer('count')->nullable();

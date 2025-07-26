@@ -48,8 +48,7 @@ class CreateFeature extends GeneratorCommand implements PromptsForMissingInput
         $namespace = implode('\\', [app()->getNamespace(), $this->type, $name]);
         $title = $this->option('title') ?? $name->headline();
         $feature = $this->option('feature') ?? $name->snake();
-
-        if(Features::from($feature)->feature()) {
+        if(Features::from($feature)?->feature()) {
             $this->newLine();
             $this->error("Feature already exists");
             exit;

@@ -5,6 +5,7 @@ namespace SaasPro\Features\Support;
 use Illuminate\Database\Eloquent\Model;
 use SaasPro\Features\Contracts\InteractsWithFeatures;
 use SaasPro\Features\Models\Feature;
+use SaasPro\Features\Models\FeatureUsage;
 
 class Usage {
 
@@ -54,10 +55,17 @@ class Usage {
     }
 
     function save(int $count = 1){
-        $usage = $this->feature->usageHistory()->make([
-            'count' => $count
-        ])->when($this->owner, fn($usage, $owner) => $usage->owner()->associate($owner))->user()->associate($this->user);
-        
+        $usage = new FeatureUsage([
+                            'count' => $count
+        ]);
+
+        $usage->when($this->owner, function($usage, $owner) { 
+            $usage->owner()->associate($owner);
+        })->when($this->user, function($usage, $user){
+            $usage->user()->associate($user);
+        });
+
+        $usage->feature()->associate($this->feature); 
         $usage->save();
         return $usage;
     }
