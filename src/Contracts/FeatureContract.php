@@ -8,7 +8,7 @@ use SaasPro\Features\Support\Usage;
 
 interface FeatureContract {
 
-    function validator(Feature $feature): FeatureState;
+    function validator(FeatureState $state): FeatureState;
     function record(Usage $usage): void;
 
 }

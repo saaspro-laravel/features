@@ -2,44 +2,54 @@
 
 namespace SaasPro\Features;
 
+use Exception;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Response;
+use SaasPro\Features\Contracts\FeatureContract;
+use SaasPro\Features\Contracts\InteractsWithFeatures;
 use SaasPro\Features\Models\Feature;
 use SaasPro\Features\Support\FeatureState;
 
 class Features {
 
-    private ?Feature $feature;
-
-    public function __construct(Feature|string|null $feature = null) {
-        is_string($feature) ? $this->fromKey($feature) : $this->feature = $feature;
+    public function authorize(){
+        Gate::before(function(?InteractsWithFeatures $user, string $ability, mixed $arguments){
+            if($feature = $this->from($ability)) {
+                $response = $feature->forUser($user)->validate($arguments);
+                if($response->failed()) return Response::deny($response->message());
+                return Response::allow();
+            }
+        });
     }
 
-    public static function from(Feature|string $feature) {
-        return new self($feature);
+    public function from(Feature|string $feature) {
+        if(is_string($feature)) {
+            if(class_exists($feature)) {
+                $feature = new $feature();
+                
+                if(!$feature instanceof FeatureContract) {
+                    throw new Exception("Feature class {$feature} must be an instance of ".FeatureContract::class);
+                }
+
+                return $feature;
+            }
+
+            if($feature = Feature::whereKey($feature)->first()) {
+                return $feature->instance;
+            }
+        }
+
+        return $feature->instance;
     }
 
-    public function fromKey($key) {
-        $this->feature = Feature::where('feature_class', $key)->orWhere('shortcode', $key)->first();
-        return $this;
+    function validate(Feature|string $feature, ?InteractsWithFeatures $user = null): FeatureState {
+        $feature = $this->from($feature);
+        if($user) $feature->forUser($user);
+        return $feature->validate();
     }
 
-    public function feature(){
-        return $this->feature;
+    function can(Feature|string $feature, ?InteractsWithFeatures $user = null): bool{
+        return $this->validate($feature, $user)->isOk();
     }
-
-    public function instance(){
-        return $this->feature()?->instance();
-    }
-
-    public function usage(){
-        return $this->feature->usage();
-    }
-
-    public function validate(array $context = []): FeatureState {        
-        return $this->feature()->instance->validate($context);     
-    }
-
-    public function use(){
-        $this->feature()->instance->use($this->usage());
-    } 
 
 }

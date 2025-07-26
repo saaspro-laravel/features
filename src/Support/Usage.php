@@ -3,21 +3,20 @@
 namespace SaasPro\Features\Support;
 
 use Illuminate\Database\Eloquent\Model;
+use SaasPro\Features\Contracts\InteractsWithFeatures;
 use SaasPro\Features\Models\Feature;
 
 class Usage {
 
-    protected Model|null $user = null;
-    protected Model|null $owner = null;
-
+    protected ?Model $owner = null;
     protected array $meta = [];
 
-    function __construct(private Feature|null $feature = null) {
+    function __construct(private ?Feature $feature = null, protected ?InteractsWithFeatures $user = null) {
         $this->feature = $feature->load('usageHistory');
     }
 
-    static function for(Feature $feature) {
-        return new self($feature);
+    static function for(Feature $feature, ?InteractsWithFeatures $user = null) {
+        return new self($feature, $user);
     }
 
     function withMeta(array $meta) {
@@ -30,7 +29,7 @@ class Usage {
         return $this;
     }
 
-    function forUser(Model $user){
+    function forUser(InteractsWithFeatures $user){
         $this->user = $user;
         return $this;
     }
@@ -54,19 +53,12 @@ class Usage {
         return $this;
     }
 
-    function save(int | null $count = null){
+    function save(int $count = 1){
         $usage = $this->feature->usageHistory()->make([
             'count' => $count
         ])->when($this->owner, fn($usage, $owner) => $usage->owner()->associate($owner))->user()->associate($this->user);
         
         $usage->save();
-        // if($this->owner) {
-        //     $usage->owner()->associate($this->owner);
-        // }
-
-        // $usage->user()->associate($this->user);
-        // $usage->save();
-
         return $usage;
     }
 
