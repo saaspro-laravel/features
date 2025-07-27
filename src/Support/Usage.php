@@ -56,7 +56,7 @@ class Usage {
 
     function save(int $count = 1){
         $usage = new FeatureUsage([
-                            'count' => $count
+            'count' => $count
         ]);
 
         $usage->when($this->owner, function($usage, $owner) { 
@@ -68,6 +68,23 @@ class Usage {
         $usage->feature()->associate($this->feature); 
         $usage->save();
         return $usage;
+    }
+
+    function hasReachedLimits(){
+        if(!$limit = $this->limit()) return false;
+        return $limit >= $this->count();
+    }
+
+    public function count(){
+        return $this->history()->sum('count');
+    }
+
+    public function limit(){
+        return $this->feature->limit;
+    }
+
+    public function remaining(){
+        return $this->limit() - $this->count();
     }
 
 }

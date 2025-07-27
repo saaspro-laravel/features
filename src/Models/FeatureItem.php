@@ -16,4 +16,5 @@ class FeatureItem extends Model {
         return $this->belongsTo(Feature::class, 'feature_id');
     }
 
+
 }

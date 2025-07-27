@@ -31,18 +31,10 @@ class Feature extends Model {
     }
 
     function getThresholdAttribute(){
-        if (isset($this->feature) && $this->feature->limit !== null) {
-            return $this->feature->limit;
-        }
-
         return $this->limit;
     }
 
     function getPeriodAttribute(){
-        if (isset($this->feature) && $this->feature->reset_period !== null) {
-            return $this->feature->reset_period;
-        }
-
         return $this->reset_period;
     }
 

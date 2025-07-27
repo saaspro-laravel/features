@@ -2,7 +2,6 @@
 
 namespace SaasPro\Features\Concerns;
 
-use Illuminate\Support\Facades\Gate;
 use SaasPro\Features\Facades\Features;
 use SaasPro\Features\Models\Feature;
 
