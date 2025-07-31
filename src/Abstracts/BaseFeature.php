@@ -95,6 +95,9 @@ abstract class BaseFeature implements  FeatureContract {
         if(method_exists(static::class, $name = "call".str($method)->headline())) {
             return (new static)->$name(...$args);
         }
+
+        $method = static::class."::".$method."()";
+        throw new \BadMethodCallException("Call to undefined method $method");
     }
 
 }

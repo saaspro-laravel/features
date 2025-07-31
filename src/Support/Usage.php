@@ -3,6 +3,7 @@
 namespace SaasPro\Features\Support;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use SaasPro\Features\Contracts\InteractsWithFeatures;
 use SaasPro\Features\Models\Feature;
 use SaasPro\Features\Models\FeatureUsage;
@@ -11,9 +12,11 @@ class Usage {
 
     protected ?Model $owner = null;
     protected array $meta = [];
+    public Collection | null $history = null;
 
     function __construct(private ?Feature $feature = null, protected ?InteractsWithFeatures $user = null) {
-        $this->feature = $feature->load('usageHistory');
+        $this->feature = $feature->load('history');
+        $this->history = $this->history();
     }
 
     static function for(Feature $feature, ?InteractsWithFeatures $user = null) {
@@ -45,8 +48,7 @@ class Usage {
     }
 
     function history(){
-        return $this->feature->usageHistory()
-                ->when($this->user, fn($query, $user) => $query->whereRelation('user', 'id', $user->id))->when($this->owner, fn($query, $owner) => $query->whereRelation('owner', 'id', $owner->id))->get();
+        return $this->feature->history()->when($this->user, fn($query, $user) => $query->whereRelation('user', 'id', $user->id))->when($this->owner, fn($query, $owner) => $query->whereRelation('owner', 'id', $owner->id))->get();
     }
 
     function record(callable $callback) {
@@ -65,7 +67,8 @@ class Usage {
             $usage->user()->associate($user);
         });
 
-        $usage->feature()->associate($this->feature); 
+        $usage->feature()->associate($this->feature);
+        
         $usage->save();
         return $usage;
     }
@@ -75,8 +78,12 @@ class Usage {
         return $limit >= $this->count();
     }
 
-    public function count(){
+    public function sum(){
         return $this->history()->sum('count');
+    }
+
+    public function count(){
+        return $this->history()->count();
     }
 
     public function limit(){
@@ -84,7 +91,11 @@ class Usage {
     }
 
     public function remaining(){
-        return $this->limit() - $this->count();
+        return $this->limit() - $this->sum();
+    }
+
+    function resettablePeriodStart(){
+        // return $this->feature->resetPeriod()
     }
 
 }

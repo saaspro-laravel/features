@@ -2,6 +2,7 @@
 
 namespace SaasPro\Features\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use SaasPro\Concerns\HasEnums;
 use SaasPro\Concerns\Models\HasStatus;
@@ -18,7 +19,7 @@ class Feature extends Model {
     ];
 
 
-    function usageHistory(){
+    function history(){
         return $this->hasMany(FeatureUsage::class);
     }
 
@@ -38,8 +39,9 @@ class Feature extends Model {
         return $this->reset_period;
     }
 
-    function resetPeriod() {
-        return now()->subtract($this->interval, $this->period);
+    function resetPeriod(Carbon|null|string $date = null) {
+        $date ??= now();
+        return $date->subtract($this->interval, $this->period);
     }
 
     function interval($prefix = '') {

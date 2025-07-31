@@ -2,12 +2,9 @@
 
 namespace SaasPro\Features;
 
-use Illuminate\Auth\Access\Response;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use SaasPro\Features\Facades\Features;
 use SaasPro\Features\Commands\CreateFeature;
-use SaasPro\Features\Contracts\InteractsWithFeatures;
 
 class FeatureServiceProvider extends ServiceProvider {
 
