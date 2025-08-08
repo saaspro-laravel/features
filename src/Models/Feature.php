@@ -4,6 +4,7 @@ namespace SaasPro\Features\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Concerns\InteractsWithPivotTable;
 use SaasPro\Concerns\HasEnums;
 use SaasPro\Concerns\Models\HasStatus;
 use SaasPro\Enums\Status;
