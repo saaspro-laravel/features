@@ -9,18 +9,14 @@ use SaasPro\Features\Models\Feature;
 trait HasFeatureThrough {
 
     protected function featurePivotName(){
-        return 'feature_item';
+        return 'pivot';
     }
 
     protected function getFeaturePivotColumn(){
         return null;
     }
 
-    protected function getFeaturePivotColumns(){
-        return [];
-    }
-
-    function featurePivot(){
+    function features(){
         if(!$pivotColumn = $this->getFeaturePivotColumn()) {
             throw new Exception("Property 'featurePivotColumn' must be defined in class ".$this::class);
         }
@@ -32,20 +28,9 @@ trait HasFeatureThrough {
             'id',
             $pivotColumn
         )->as($this->featurePivotName());
-
-        if(!empty($this->getFeaturePivotColumns())) {
-            $query->withPivot(...$this->getFeaturePivotColumns());
-        }
+        $query->withPivot(['limit', 'reset_period', 'reset_interval']);
 
         return $query;
-    }
-
-    function resolveFeatures(Collection $features): Collection {
-        return $features;
-    }
-
-    function getFeaturesAttribute(){
-        return $this->resolveFeatures($this->featurePivot);
     }
 
 }
