@@ -17,7 +17,9 @@ abstract class BaseFeature implements  FeatureContract {
     protected array $context = [];
 
     function __construct(protected InteractsWithFeatures | null $user = null){
-        if($user) $this->forUser($user ?? Auth::user());
+        $this->forUser(Auth::user());
+        if($user) $this->forUser($user);
+
         $this->feature();
     }
 
@@ -51,7 +53,8 @@ abstract class BaseFeature implements  FeatureContract {
     }
 
     public function callUse(){
-        $this->record($this->usage());
+        $state = FeatureState::withFeature($this->feature())->withUser($this->user)->withUsage($this->usage());
+        $this->record($state);
         $this->afterUsage();
     }
 
@@ -66,10 +69,23 @@ abstract class BaseFeature implements  FeatureContract {
 
         return $this;
     }
+
+    function resolve(FeatureState $featureState): FeatureState {
+        $feature = Feature::whereFeatureClass($className = static::class)->first();
+        return $featureState->withFeature($feature);
+    }
     
     public function feature(){
-        if(!$this->feature = Feature::whereFeatureClass($className = static::class)->first()){
-             throw new Exception("The requested feature {$className} does not exist.");
+        $state = FeatureState::withUser($this->user)->withUsage($this->usage());
+        $state = $this->resolve($state);
+
+        if(!$state->isOk()){
+            throw new Exception($state->message);
+        }
+
+        if(!$state->feature){
+            $className = static::class;
+            throw new Exception("The requested feature {$className} does not exist.");
         }
 
         return $this->feature;
@@ -79,20 +95,20 @@ abstract class BaseFeature implements  FeatureContract {
         return Usage::for($this->feature, $this->user);
     }
 
-    public function record(Usage $usage): void{
-        $usage->save();
+    public function record(FeatureState $state): void{
+        $state->usage->save();
     }   
 
     public function afterUsage(): void { }  
 
     public function __call($method, $args){
-        if(method_exists($this::class, $name = "call".str($method)->headline())) {
+        if(method_exists($this::class, $name = "call".str($method)->pascal())) {
             return $this->{$name}(...$args);
         }
     }
 
     public static function __callStatic($method, $args){
-        if(method_exists(static::class, $name = "call".str($method)->headline())) {
+        if(method_exists(static::class, $name = "call".str($method)->pascal())) {
             return (new static)->$name(...$args);
         }
 

@@ -3,11 +3,13 @@
 namespace SaasPro\Features\Models;
 
 use Carbon\Carbon;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Concerns\InteractsWithPivotTable;
 use SaasPro\Concerns\HasEnums;
 use SaasPro\Concerns\Models\HasStatus;
 use SaasPro\Enums\Status;
+use SaasPro\Features\Contracts\InteractsWithFeatures;
 use SaasPro\Features\Support\Usage;
 
 class Feature extends Model {
@@ -19,9 +21,16 @@ class Feature extends Model {
         'status' => Status::class
     ];
 
-
     function history(){
         return $this->hasMany(FeatureUsage::class);
+    }
+
+    function featureItems(){
+        return $this->morphMany(FeatureItem::class, 'featurable');
+    }
+
+    function scopeIsOwnedBy($query, Model $owner, $key = 'id') {
+        $query->whereMorphRelation('featureItems', [$owner::class], $key, $owner->{$key});
     }
 
     function getInstanceAttribute(){

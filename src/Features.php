@@ -3,8 +3,8 @@
 namespace SaasPro\Features;
 
 use Exception;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Response;
 use SaasPro\Features\Contracts\FeatureContract;
 use SaasPro\Features\Contracts\InteractsWithFeatures;
 use SaasPro\Features\Models\Feature;
@@ -16,7 +16,9 @@ class Features {
         Gate::before(function(?InteractsWithFeatures $user, string $ability, mixed $arguments){
             if($feature = $this->from($ability)) {
                 $response = $feature->forUser($user)->validate($arguments);
-                if($response->failed()) return Response::deny($response->message());
+                if($response->failed()) {
+                    return Response::deny($response->message());
+                }
                 return Response::allow();
             }
         });

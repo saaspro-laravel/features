@@ -2,6 +2,7 @@
 
 namespace SaasPro\Features\Support;
 
+use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use SaasPro\Features\Contracts\InteractsWithFeatures;
@@ -61,11 +62,13 @@ class Usage {
             'count' => $count
         ]);
 
-        $usage->when($this->owner, function($usage, $owner) { 
-            $usage->owner()->associate($owner);
-        })->when($this->user, function($usage, $user){
-            $usage->user()->associate($user);
-        });
+        if($this->owner) {
+            $usage->owner()->associate($this->owner);
+        }
+
+        if($this->user) {
+            $usage->user()->associate($this->user);
+        }
 
         $usage->feature()->associate($this->feature);
         
@@ -86,8 +89,21 @@ class Usage {
         return $this->history()->count();
     }
 
-    public function limit(){
-        return $this->feature->limit;
+    public function limit($withoutPivot = false){
+        return $this->getItem('limit', $withoutPivot);
+    }
+    
+    public function resetPeriod($withoutPivot = false) {
+        return $this->getItem('reset_period', $withoutPivot);
+    }
+    
+    public function resetInterval($withoutPivot = false) {
+        return $this->getItem('reset_interval', $withoutPivot);
+    }
+    
+    function getItem($column, $withoutPivot = false) {
+        if(!$withoutPivot && $item = $this->feature->pivot?->{$column}) return $item; 
+        return $this->feature->{$column};    
     }
 
     public function remaining(){
@@ -96,6 +112,12 @@ class Usage {
 
     function resettablePeriodStart(){
         // return $this->feature->resetPeriod()
+    }
+
+    function getCurrentInterval($withoutPivot = false){
+        $interval = $this->resetInterval($withoutPivot);
+        $period = $this->resetPeriod($withoutPivot);
+        return CarbonInterval::make($period, $interval);
     }
 
 }
