@@ -117,6 +117,7 @@ class Usage {
     function getCurrentInterval($withoutPivot = false){
         $interval = $this->resetInterval($withoutPivot);
         $period = $this->resetPeriod($withoutPivot);
+        
         return CarbonInterval::make($period, $interval);
     }
 

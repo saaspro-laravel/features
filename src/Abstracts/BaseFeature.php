@@ -16,10 +16,9 @@ abstract class BaseFeature implements  FeatureContract {
     protected Feature | null $feature = null;
     protected array $context = [];
 
-    function __construct(protected InteractsWithFeatures | null $user = null){
-        $this->forUser(Auth::user());
+    function __construct(protected ?InteractsWithFeatures $user = null){
+        $user ??= Auth::user();
         if($user) $this->forUser($user);
-
         $this->feature();
     }
 
@@ -32,12 +31,10 @@ abstract class BaseFeature implements  FeatureContract {
     }
 
     function response($status, string $message = ''): FeatureState {
-        return FeatureState::dispatch($status)
-                    ->withFeature($this->feature)
-                    ->withMessage($message);
+        return FeatureState::dispatch($status)->withFeature($this->feature)->withMessage($message);
     }
 
-    public function callForUser(InteractsWithFeatures $user): static{
+    public function callForUser(?InteractsWithFeatures $user): static{
         $this->user = $user;
         return $this;
     }
@@ -71,13 +68,13 @@ abstract class BaseFeature implements  FeatureContract {
     }
 
     function resolve(FeatureState $featureState): FeatureState {
-        $feature = Feature::whereFeatureClass($className = static::class)->first();
-        return $featureState->withFeature($feature);
+        $this->feature = Feature::whereFeatureClass($className = static::class)->first();
+        return $featureState->withFeature($this->feature);
     }
     
     public function feature(){
-        $state = FeatureState::withUser($this->user)->withUsage($this->usage());
-        $state = $this->resolve($state);
+        $state = FeatureState::withUser($this->user);
+        $state = $this->resolve($state)->withUsage($this->usage());
 
         if(!$state->isOk()){
             throw new Exception($state->message);

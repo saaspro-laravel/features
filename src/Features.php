@@ -16,9 +16,11 @@ class Features {
         Gate::before(function(?InteractsWithFeatures $user, string $ability, mixed $arguments){
             if($feature = $this->from($ability)) {
                 $response = $feature->forUser($user)->validate($arguments);
-                if($response->failed()) {
+
+                if(!$response->can()) {
                     return Response::deny($response->message());
                 }
+                
                 return Response::allow();
             }
         });
@@ -27,7 +29,7 @@ class Features {
     public function from(Feature|string $feature) {
         if(is_string($feature)) {
             if(class_exists($feature)) {
-                $feature = new $feature();
+                $feature = new $feature;
                 
                 if(!$feature instanceof FeatureContract) {
                     throw new Exception("Feature class {$feature} must be an instance of ".FeatureContract::class);
